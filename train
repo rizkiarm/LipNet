@@ -1,0 +1,20 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCENARIO_PATH="$DIR/training/$1"
+
+if [[ $# -lt 1 ]] ; then
+    echo -e 'Usage:\n./train [Scenario] [GPUs]\n'
+    echo -e "Scenario:\n$(ls -d $DIR/training/*/ | rev | cut -f2 -d'/' | rev)"
+    exit 1
+fi
+
+if [[ $# -lt 2 ]] ; then
+	echo "Using all available GPUs."
+    python "$SCENARIO_PATH/train.py"
+    exit 1
+fi
+
+GPUS=$2
+
+echo "Using GPUs $GPUS"
+CUDA_VISIBLE_DEVICES=$GPUS python "$SCENARIO_PATH/train.py"

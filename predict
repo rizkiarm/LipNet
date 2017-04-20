@@ -1,0 +1,35 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [[ $# -lt 2 ]] ; then
+    echo -e 'Usage: ./predict [Weight] [Video] <Max String> <Output Size>'
+    exit 1
+fi
+
+WEIGHT_PATH=$1
+VIDEO_PATH=$2
+
+if [[ "$WEIGHT_PATH" != /* ]]; then
+	WEIGHT_PATH="$DIR/$WEIGHT_PATH"
+fi
+
+if [[ "$VIDEO_PATH" != /* ]]; then
+	VIDEO_PATH="$DIR/$VIDEO_PATH"
+fi
+
+if [[ $# -eq 2 ]] ; then
+	python "$DIR/evaluation/predict.py" "$WEIGHT_PATH" "$VIDEO_PATH"
+    exit 1
+fi
+
+if [[ $# -eq 3 ]] ; then
+	python "$DIR/evaluation/predict.py" "$WEIGHT_PATH" "$VIDEO_PATH" $3
+    exit 1
+fi
+
+if [[ $# -eq 4 ]] ; then
+	python "$DIR/evaluation/predict.py" "$WEIGHT_PATH" "$VIDEO_PATH" $3 $4
+    exit 1
+fi
+
+echo 'Too much argument(s)'
