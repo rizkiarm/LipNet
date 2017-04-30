@@ -151,7 +151,7 @@ class BasicGenerator(keras.callbacks.Callback):
     def next_train(self):
         while 1:
             if self.curriculum is not None and self.curriculum.epoch != self.current_epoch.value:
-                self.update_curriculum()
+                self.update_curriculum(train=True)
             ret = self.get_batch(self.cur_train_index, self.minibatch_size, train=True)
             self.cur_train_index += self.minibatch_size
             if self.cur_train_index >= self.training_size:
@@ -163,7 +163,7 @@ class BasicGenerator(keras.callbacks.Callback):
     def next_val(self):
         while 1:
             if self.curriculum is not None and self.curriculum.epoch != self.current_epoch.value:
-                self.update_curriculum()
+                self.update_curriculum(train=False)
             ret = self.get_batch(self.cur_val_index, self.minibatch_size, train=False)
             self.cur_val_index += self.minibatch_size
             if self.cur_val_index >= self.validation_size:
@@ -178,8 +178,8 @@ class BasicGenerator(keras.callbacks.Callback):
         with self.current_epoch.get_lock():
             self.current_epoch.value = epoch
 
-    def update_curriculum(self):
-        self.curriculum.set_epoch(self.current_epoch.value)
+    def update_curriculum(self, train=True):
+        self.curriculum.update(self.current_epoch.value, train=train)
         print "Epoch {}: {}".format(self.current_epoch.value, self.curriculum)
 
 

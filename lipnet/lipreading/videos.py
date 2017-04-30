@@ -66,9 +66,9 @@ class VideoAugmenter(object):
         changes = [] # [(frame_i, type=del/dup)]
         t = video.length
         for i in range(t):
-            if np.random.ranf() < probability:
+            if np.random.ranf() <= probability/2:
                 changes.append((i, 'del'))
-            if np.random.ranf() < probability:
+            if probability/2 < np.random.ranf() <= probability:
                 changes.append((i, 'dup'))
         _face = np.copy(video.face)
         _mouth = np.copy(video.mouth)
