@@ -1,5 +1,5 @@
-from lipnet.core.decoders import decode_batch_beam as decode_batch
-from lipnet.lipreading.helpers import alphabets
+from lipnet.core.decoders import decode_batch_best as decode_batch
+from lipnet.lipreading.helpers import labels_to_text
 from lipnet.utils.wer import wer_sentence
 from nltk.translate import bleu_score
 import numpy as np
@@ -25,7 +25,7 @@ class Statistics(keras.callbacks.Callback):
         while num_left > 0:
             output_batch = next(self.generator)[0]
             num_proc     = min(output_batch['the_input'].shape[0], num_left)
-            decoded_res  = decode_batch(self.test_func, output_batch['the_input'][0:num_proc], alphabets)
+            decoded_res  = decode_batch(self.test_func, output_batch['the_input'][0:num_proc], labels_to_text)
 
             for j in range(0, num_proc):
                 data.append((decoded_res[j], output_batch['source_str'][j]))
@@ -94,7 +94,7 @@ class Visualize(keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         output_batch = next(self.generator)[0]
-        res = decode_batch(self.test_func, output_batch['the_input'][0:self.num_display_sentences], alphabets)
+        res = decode_batch(self.test_func, output_batch['the_input'][0:self.num_display_sentences], labels_to_text)
 
         with open(os.path.join(self.output_dir, 'e%02d.csv' % (epoch)), 'wb') as csvfile:
             csvw = csv.writer(csvfile)
