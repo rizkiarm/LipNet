@@ -105,7 +105,7 @@ class VideoAugmenter(object):
 class Video(object):
     def __init__(self, vtype='mouth', face_predictor_path=None):
         if vtype == 'face' and face_predictor_path is None:
-            raise ValueError('Face video need to be accompanied with face predictor')
+            raise AttributeError('Face video need to be accompanied with face predictor')
         self.face_predictor_path = face_predictor_path
         self.vtype = vtype
 

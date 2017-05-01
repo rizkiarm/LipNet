@@ -62,7 +62,7 @@ class BasicGenerator(keras.callbacks.Callback):
                     video = Video(self.vtype, self.face_predictor_path).from_video(video_path)
                 else:
                     video = Video(self.vtype, self.face_predictor_path).from_frames(video_path)
-            except ValueError as err:
+            except AttributeError as err:
                 raise err
             except:
                 print "Error loading video: "+video_path
