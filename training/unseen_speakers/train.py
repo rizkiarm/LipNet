@@ -3,6 +3,9 @@ from keras.callbacks import TensorBoard, CSVLogger, ModelCheckpoint
 from lipnet.lipreading.generators import BasicGenerator
 from lipnet.lipreading.callbacks import Statistics, Visualize
 from lipnet.lipreading.curriculums import Curriculum
+from lipnet.core.decoders import Decoder
+from lipnet.lipreading.helpers import labels_to_text
+from lipnet.utils.spell import Spell
 from lipnet.model import LipNet
 import numpy as np
 import datetime
@@ -14,6 +17,12 @@ CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 DATASET_DIR  = os.path.join(CURRENT_PATH, 'datasets')
 OUTPUT_DIR   = os.path.join(CURRENT_PATH, 'results')
 LOG_DIR      = os.path.join(CURRENT_PATH, 'logs')
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+PREDICT_GREEDY      = False
+PREDICT_BEAM_WIDTH  = 200
+PREDICT_DICTIONARY  = os.path.join(dir_path,'..','..','common','dictionaries','grid.txt')
 
 def curriculum_rules(epoch):
     return { 'sentence_length': -1, 'flip_probability': 0.5, 'jitter_probability': 0.05 }
@@ -41,9 +50,13 @@ def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, abso
         weight_file = os.path.join(OUTPUT_DIR, os.path.join(run_name, 'weights%02d.h5' % (start_epoch - 1)))
         lipnet.model.load_weights(weight_file)
 
+    spell = Spell(path=PREDICT_DICTIONARY)
+    decoder = Decoder(greedy=PREDICT_GREEDY, beam_width=PREDICT_BEAM_WIDTH,
+                      postprocessors=[labels_to_text, spell.sentence])
+
     # define callbacks
-    statistics  = Statistics(lipnet.test_function, lip_gen.next_val(), 256, output_dir=os.path.join(OUTPUT_DIR, run_name))
-    visualize   = Visualize(os.path.join(OUTPUT_DIR, run_name), lipnet.test_function, lip_gen.next_val(), minibatch_size)
+    statistics  = Statistics(lipnet, lip_gen.next_val(), decoder, 256, output_dir=os.path.join(OUTPUT_DIR, run_name))
+    visualize   = Visualize(os.path.join(OUTPUT_DIR, run_name), lipnet, lip_gen.next_val(), decoder, num_display_sentences=minibatch_size)
     tensorboard = TensorBoard(log_dir=os.path.join(LOG_DIR, run_name))
     csv_logger  = CSVLogger(os.path.join(LOG_DIR, "{}-{}.csv".format('training',run_name)), separator=',', append=True)
     checkpoint  = ModelCheckpoint(os.path.join(OUTPUT_DIR, run_name, "weights{epoch:02d}.h5"), monitor='val_loss', save_weights_only=True, mode='auto', period=1)

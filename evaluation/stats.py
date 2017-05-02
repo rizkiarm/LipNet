@@ -2,10 +2,20 @@ from keras.optimizers import Adam
 from lipnet.lipreading.generators import BasicGenerator
 from lipnet.lipreading.callbacks import Statistics
 from lipnet.model import LipNet
+from lipnet.core.decoders import Decoder
+from lipnet.lipreading.helpers import labels_to_text
+from lipnet.utils.spell import Spell
 import numpy as np
 import sys
+import os
 
 np.random.seed(55)
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+PREDICT_GREEDY      = False
+PREDICT_BEAM_WIDTH  = 200
+PREDICT_DICTIONARY  = os.path.join(dir_path,'..','common','dictionaries','grid.txt')
 
 def stats(weight_path, dataset_path, img_c, img_w, img_h, frames_n, absolute_max_string_len, minibatch_size):
 	lip_gen = BasicGenerator(dataset_path=dataset_path, 
@@ -21,7 +31,11 @@ def stats(weight_path, dataset_path, img_c, img_w, img_h, frames_n, absolute_max
 	lipnet.model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer=adam)
 	lipnet.model.load_weights(weight_path)
 
-	statistics  = Statistics(lipnet.test_function, lip_gen.next_val(), 256, output_dir=None)
+	spell = Spell(path=PREDICT_DICTIONARY)
+	decoder = Decoder(greedy=PREDICT_GREEDY, beam_width=PREDICT_BEAM_WIDTH,
+                      postprocessors=[labels_to_text, spell.sentence])
+
+	statistics  = Statistics(lipnet, lip_gen.next_val(), decoder, 256, output_dir=None)
 
 	lip_gen.on_train_begin()
 	statistics.on_epoch_end(0)

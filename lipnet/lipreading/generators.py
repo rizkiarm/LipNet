@@ -126,10 +126,10 @@ class BasicGenerator(keras.callbacks.Callback):
                 video, align, video_unpadded_length = self.curriculum.apply(video, align)
             X_data.append(video.data)
             Y_data.append(align.padded_label)
-            label_length.append([align.label_length])
+            label_length.append(align.label_length) # CHANGED [A] -> A, CHECK!
             # input_length.append([video_unpadded_length - 2]) # 2 first frame discarded
-            input_length.append([video.length]) # Just use the video padded length to avoid CTC No path found error (v_len < a_len)
-            source_str.append(align.sentence)
+            input_length.append(video.length) # Just use the video padded length to avoid CTC No path found error (v_len < a_len)
+            source_str.append(align.sentence) # CHANGED [A] -> A, CHECK!
 
         source_str = np.array(source_str)
         label_length = np.array(label_length)

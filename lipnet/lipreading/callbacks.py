@@ -1,5 +1,3 @@
-from lipnet.core.decoders import decode_batch_best as decode_batch
-from lipnet.lipreading.helpers import labels_to_text
 from lipnet.utils.wer import wer_sentence
 from nltk.translate import bleu_score
 import numpy as np
@@ -10,11 +8,12 @@ import os
 
 class Statistics(keras.callbacks.Callback):
 
-    def __init__(self, test_func, generator, num_samples_stats=256, output_dir=None):
-        self.test_func = test_func
+    def __init__(self, model, generator, decoder, num_samples_stats=256, output_dir=None):
+        self.model = model
         self.output_dir = output_dir
         self.generator = generator
         self.num_samples_stats = num_samples_stats
+        self.decoder = decoder
         if output_dir is not None and not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
@@ -23,9 +22,11 @@ class Statistics(keras.callbacks.Callback):
         data = []
 
         while num_left > 0:
-            output_batch = next(self.generator)[0]
-            num_proc     = min(output_batch['the_input'].shape[0], num_left)
-            decoded_res  = decode_batch(self.test_func, output_batch['the_input'][0:num_proc], labels_to_text)
+            output_batch    = next(self.generator)[0]
+            num_proc        = min(output_batch['the_input'].shape[0], num_left)
+            y_pred          = self.model.predict(output_batch['the_input'][0:num_proc])
+            input_length    = output_batch['input_length'][0:num_proc]
+            decoded_res     = self.decoder.decode(y_pred, input_length)
 
             for j in range(0, num_proc):
                 data.append((decoded_res[j], output_batch['source_str'][j]))
@@ -79,22 +80,29 @@ class Statistics(keras.callbacks.Callback):
         if self.output_dir is not None:
             with open(os.path.join(self.output_dir, 'stats.csv'), 'ab') as csvfile:
                 csvw = csv.writer(csvfile)
-                csvw.writerow([epoch, stats['samples'], stats['cer'][0], stats['cer'][1], stats['wer'][0], stats['wer'][1], stats['bleu'][0], stats['bleu'][1]])
+                csvw.writerow([epoch, stats['samples'],
+                               "{0:.5f}".format(stats['cer'][0]), "{0:.5f}".format(stats['cer'][1]),
+                               "{0:.5f}".format(stats['wer'][0]), "{0:.5f}".format(stats['wer'][1]),
+                               "{0:.5f}".format(stats['bleu'][0]), "{0:.5f}".format(stats['bleu'][1])])
 
 
 class Visualize(keras.callbacks.Callback):
 
-    def __init__(self, output_dir, test_func, generator, num_display_sentences=10):
-        self.test_func = test_func
+    def __init__(self, output_dir, model, generator, decoder, num_display_sentences=10):
+        self.model = model
         self.output_dir = output_dir
         self.generator = generator
         self.num_display_sentences = num_display_sentences
+        self.decoder = decoder
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
     def on_epoch_end(self, epoch, logs={}):
         output_batch = next(self.generator)[0]
-        res = decode_batch(self.test_func, output_batch['the_input'][0:self.num_display_sentences], labels_to_text)
+
+        y_pred       = self.model.predict(output_batch['the_input'][0:self.num_display_sentences])
+        input_length = output_batch['input_length'][0:self.num_display_sentences]
+        res          = self.decoder.decode(y_pred, input_length)
 
         with open(os.path.join(self.output_dir, 'e%02d.csv' % (epoch)), 'wb') as csvfile:
             csvw = csv.writer(csvfile)

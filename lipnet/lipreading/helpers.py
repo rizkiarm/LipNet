@@ -16,5 +16,3 @@ def labels_to_text(labels):
         elif c == 26:
             text += ' '
     return text
-
-alphabets = 'abcdefghijklmnopqrstuvwxyz -'

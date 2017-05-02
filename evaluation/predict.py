@@ -1,7 +1,8 @@
 from lipnet.lipreading.videos import Video
 from lipnet.lipreading.visualization import show_video_subtitle
-from lipnet.core.decoders import decode_batch_beam as decode_batch
-from lipnet.lipreading.helpers import alphabets
+from lipnet.core.decoders import Decoder
+from lipnet.lipreading.helpers import labels_to_text
+from lipnet.utils.spell import Spell
 from lipnet.model import LipNet
 from keras.optimizers import Adam
 from keras import backend as K
@@ -11,10 +12,15 @@ import os
 
 np.random.seed(55)
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+PREDICT_GREEDY      = False
+PREDICT_BEAM_WIDTH  = 200
+PREDICT_DICTIONARY  = os.path.join(dir_path,'..','common','dictionaries','grid.txt')
+
 def predict(weight_path, video_path, absolute_max_string_len=32, output_size=28):
     print "\nLoading data from disk..."
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    face_predictor_path = os.path.join(dir_path,'models','shape_predictor_68_face_landmarks.dat')
+    face_predictor_path = os.path.join(dir_path,'..','common','predictors','shape_predictor_68_face_landmarks.dat')
     video = Video(vtype='face', face_predictor_path=face_predictor_path)
     if os.path.isfile(video_path):
         video.from_video(video_path)
@@ -36,8 +42,15 @@ def predict(weight_path, video_path, absolute_max_string_len=32, output_size=28)
     lipnet.model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer=adam)
     lipnet.model.load_weights(weight_path)
 
-    X_data = np.array([video.data]).astype(np.float32) / 255
-    result = decode_batch(lipnet.test_function, X_data, alphabets)[0]
+    spell = Spell(path=PREDICT_DICTIONARY)
+    decoder = Decoder(greedy=PREDICT_GREEDY, beam_width=PREDICT_BEAM_WIDTH,
+                      postprocessors=[labels_to_text, spell.sentence])
+
+    X_data       = np.array([video.data]).astype(np.float32) / 255
+    input_length = np.array([len(video.data)])
+
+    y_pred         = lipnet.predict(X_data)
+    result         = decoder.decode(y_pred, input_length)[0]
 
     return (video, result)
 

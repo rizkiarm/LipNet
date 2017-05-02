@@ -5,7 +5,7 @@ Keras implementation of the method described in the paper 'LipNet: End-to-End Se
 
 ## Dependencies
 * Keras 2.0+
-* Tensorflow 1.0+ / Theano 0.9+
+* Tensorflow 1.0+
 * PIP (for package installation)
 
 Plus several other libraries listed on `setup.py`
@@ -96,13 +96,14 @@ This is a work in progress. Errors are to be expected.
 If you found some errors in terms of implementation please report them by submitting issue(s) or making PR(s). Thanks!
 
 **Some todos:**
-- [ ] Use Stanford-CTC beam search
+- [X] Use ~~Stanford-CTC~~ Tensorflow CTC beam search
+- [X] Auto spelling correction
 - [ ] Integrate language model for beam search
 - [ ] RGB normalization over the dataset.
-- [ ] Validate CTC implementation in training.
+- [X] Validate CTC implementation in training.
 - [ ] Proper documentation
 - [ ] Unit tests
-- [ ] (Maybe) better curriculum learning.
+- [X] (Maybe) better curriculum learning.
 - [ ] (Maybe) some proper scripts to do dataset stuff.
 
 ## License
