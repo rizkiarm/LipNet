@@ -3,6 +3,20 @@ Keras implementation of the method described in the paper 'LipNet: End-to-End Se
 
 ![LipNet performing prediction (subtitle alignment only for visualization)](assets/lipreading.gif)
 
+## Results
+|       Scenario       | Epoch |  CER  |  WER  |  BLEU |
+|:--------------------:|:-----:|:-----:|:-----:|:-----:|
+|  Unseen speakers [C] |   15  | 0.102 | 0.150 | 0.844 |
+|    Unseen speakers   |  N/A  |  N/A  |  N/A  |  N/A  |
+| Unseen sentences [C] |  N/A  |  N/A  |  N/A  |  N/A  |
+|   Unseen sentences   |  N/A  |  N/A  |  N/A  |  N/A  |
+
+**Notes**:
+
+- [C] means using curriculum learning.
+- N/A means either the training is in progress or haven't been performed.
+- Your contribution in sharing the results of this model is highly appreciated :)
+
 ## Dependencies
 * Keras 2.0+
 * Tensorflow 1.0+
