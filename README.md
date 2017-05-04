@@ -92,9 +92,31 @@ The same way you do unseen speakers.
 ```
 ./train unseen_speakers_curriculum [GPUs (optional)]
 ```
-### Planned
-* Overlapped speakers
-* Overlapped speakers with curriculum learning
+
+###Overlapped Speakers
+Run the preparation script:
+```
+python prepare.py [Path to video dataset] [Path to align dataset] [Number of samples]
+```
+**Notes:**
+- ``[Path to video dataset]`` should be a folder with structure: ``/s{i}/[video]``
+- ``[Path to align dataset]`` should be a folder with structure: ``/[align].align``
+- ``[Number of samples]`` should be less than or equal to ``min(len(ls '/s{i}/*'))``
+
+Then run training for each speaker:
+```
+python training/overlapped_speakers/train.py s{i}
+```
+
+###Overlapped Speakers with curriculum learning
+Copy the ``prepare.py`` from ``overlapped_speakers`` folder to ``overlapped_speakers_curriculum`` folder, 
+and run it as previously described in overlapped speakers training explanation.
+
+Then run training for each speaker:
+```
+python training/overlapped_speakers_curriculum/train.py s{i}
+```
+**Note:** As always, you can change the curriculum by modifying the ``curriculum_rules`` method inside the ``train.py``
 
 ## Evaluation
 To evaluate and visualize the trained model on a single video / image frames, you can execute the following command:
@@ -112,6 +134,7 @@ If you found some errors in terms of implementation please report them by submit
 **Some todos:**
 - [X] Use ~~Stanford-CTC~~ Tensorflow CTC beam search
 - [X] Auto spelling correction
+- [X] Overlapped speakers (and its curriculum) training
 - [ ] Integrate language model for beam search
 - [ ] RGB normalization over the dataset.
 - [X] Validate CTC implementation in training.
