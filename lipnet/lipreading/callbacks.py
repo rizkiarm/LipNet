@@ -8,8 +8,8 @@ import os
 
 class Statistics(keras.callbacks.Callback):
 
-    def __init__(self, model, generator, decoder, num_samples_stats=256, output_dir=None):
-        self.model = model
+    def __init__(self, model_container, generator, decoder, num_samples_stats=256, output_dir=None):
+        self.model_container = model_container
         self.output_dir = output_dir
         self.generator = generator
         self.num_samples_stats = num_samples_stats
@@ -24,7 +24,7 @@ class Statistics(keras.callbacks.Callback):
         while num_left > 0:
             output_batch    = next(self.generator)[0]
             num_proc        = min(output_batch['the_input'].shape[0], num_left)
-            y_pred          = self.model.predict(output_batch['the_input'][0:num_proc])
+            y_pred          = self.model_container.predict(output_batch['the_input'][0:num_proc])
             input_length    = output_batch['input_length'][0:num_proc]
             decoded_res     = self.decoder.decode(y_pred, input_length)
 
@@ -88,8 +88,8 @@ class Statistics(keras.callbacks.Callback):
 
 class Visualize(keras.callbacks.Callback):
 
-    def __init__(self, output_dir, model, generator, decoder, num_display_sentences=10):
-        self.model = model
+    def __init__(self, output_dir, model_container, generator, decoder, num_display_sentences=10):
+        self.model_container = model_container
         self.output_dir = output_dir
         self.generator = generator
         self.num_display_sentences = num_display_sentences
@@ -100,7 +100,7 @@ class Visualize(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs={}):
         output_batch = next(self.generator)[0]
 
-        y_pred       = self.model.predict(output_batch['the_input'][0:self.num_display_sentences])
+        y_pred       = self.model_container.predict(output_batch['the_input'][0:self.num_display_sentences])
         input_length = output_batch['input_length'][0:self.num_display_sentences]
         res          = self.decoder.decode(y_pred, input_length)
 

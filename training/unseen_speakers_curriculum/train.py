@@ -18,11 +18,9 @@ DATASET_DIR  = os.path.join(CURRENT_PATH, 'datasets')
 OUTPUT_DIR   = os.path.join(CURRENT_PATH, 'results')
 LOG_DIR      = os.path.join(CURRENT_PATH, 'logs')
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-
 PREDICT_GREEDY      = False
 PREDICT_BEAM_WIDTH  = 200
-PREDICT_DICTIONARY  = os.path.join(dir_path,'..','..','common','dictionaries','grid.txt')
+PREDICT_DICTIONARY  = os.path.join(CURRENT_PATH,'..','..','common','dictionaries','grid.txt')
 
 def curriculum_rules(epoch):
     if epoch < 1:

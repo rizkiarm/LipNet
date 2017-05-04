@@ -10,13 +10,11 @@ from lipnet.model import LipNet
 import numpy as np
 import datetime
 import os
+import sys
 
 np.random.seed(55)
 
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
-DATASET_DIR  = os.path.join(CURRENT_PATH, 'datasets')
-OUTPUT_DIR   = os.path.join(CURRENT_PATH, 'results')
-LOG_DIR      = os.path.join(CURRENT_PATH, 'logs')
 
 PREDICT_GREEDY      = False
 PREDICT_BEAM_WIDTH  = 200
@@ -26,7 +24,11 @@ def curriculum_rules(epoch):
     return { 'sentence_length': -1, 'flip_probability': 0.5, 'jitter_probability': 0.05 }
 
 
-def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, absolute_max_string_len, minibatch_size):
+def train(run_name, speaker, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, absolute_max_string_len, minibatch_size):
+    DATASET_DIR = os.path.join(CURRENT_PATH, speaker, 'datasets')
+    OUTPUT_DIR = os.path.join(CURRENT_PATH, speaker, 'results')
+    LOG_DIR = os.path.join(CURRENT_PATH, speaker, 'logs')
+
     curriculum = Curriculum(curriculum_rules)
     lip_gen = BasicGenerator(dataset_path=DATASET_DIR,
                                 minibatch_size=minibatch_size,
@@ -62,8 +64,8 @@ def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, abso
     lipnet.model.fit_generator(generator=lip_gen.next_train(),
                         steps_per_epoch=lip_gen.training_size, epochs=stop_epoch,
                         validation_data=lip_gen.next_val(), validation_steps=lip_gen.validation_size,
-                        callbacks=[checkpoint, statistics, visualize, lip_gen, tensorboard, csv_logger], 
-                        initial_epoch=start_epoch, 
+                        callbacks=[checkpoint, statistics, visualize, lip_gen, tensorboard, csv_logger],
+                        initial_epoch=start_epoch,
                         verbose=1,
                         max_q_size=10,
                         workers=8,
@@ -71,4 +73,5 @@ def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, abso
 
 if __name__ == '__main__':
     run_name = datetime.datetime.now().strftime('%Y:%m:%d:%H:%M:%S')
-    train(run_name, 0, 20, 3, 100, 50, 75, 32, 50)
+    speaker = sys.argv[1]
+    train(run_name, speaker, 0, 20, 3, 100, 50, 75, 32, 50)

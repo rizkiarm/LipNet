@@ -12,16 +12,17 @@ import os
 
 np.random.seed(55)
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+
+FACE_PREDICTOR_PATH = os.path.join(CURRENT_PATH,'..','common','predictors','shape_predictor_68_face_landmarks.dat')
 
 PREDICT_GREEDY      = False
 PREDICT_BEAM_WIDTH  = 200
-PREDICT_DICTIONARY  = os.path.join(dir_path,'..','common','dictionaries','grid.txt')
+PREDICT_DICTIONARY  = os.path.join(CURRENT_PATH,'..','common','dictionaries','grid.txt')
 
 def predict(weight_path, video_path, absolute_max_string_len=32, output_size=28):
     print "\nLoading data from disk..."
-    face_predictor_path = os.path.join(dir_path,'..','common','predictors','shape_predictor_68_face_landmarks.dat')
-    video = Video(vtype='face', face_predictor_path=face_predictor_path)
+    video = Video(vtype='face', face_predictor_path=FACE_PREDICTOR_PATH)
     if os.path.isfile(video_path):
         video.from_video(video_path)
     else:
