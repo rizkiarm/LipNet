@@ -93,7 +93,7 @@ The same way you do unseen speakers.
 ./train unseen_speakers_curriculum [GPUs (optional)]
 ```
 
-###Overlapped Speakers
+### Overlapped Speakers
 Run the preparation script:
 ```
 python prepare.py [Path to video dataset] [Path to align dataset] [Number of samples]
@@ -108,7 +108,7 @@ Then run training for each speaker:
 python training/overlapped_speakers/train.py s{i}
 ```
 
-###Overlapped Speakers with curriculum learning
+### Overlapped Speakers with curriculum learning
 Copy the ``prepare.py`` from ``overlapped_speakers`` folder to ``overlapped_speakers_curriculum`` folder, 
 and run it as previously described in overlapped speakers training explanation.
 
