@@ -17,7 +17,7 @@ import multiprocessing
 # datasets/align/<id>.align
 class BasicGenerator(keras.callbacks.Callback):
     def __init__(self, dataset_path, minibatch_size, img_c, img_w, img_h, frames_n, absolute_max_string_len=30,
-                 vtype='mouth', face_predictor_path=None, curriculum=None, start_epoch=0):
+                 vtype='mouth', face_predictor_path=None, curriculum=None, start_epoch=0, random_seed=13):
         self.dataset_path   = dataset_path
         self.minibatch_size = minibatch_size
         self.blank_label    = self.get_output_size() - 1
@@ -26,8 +26,11 @@ class BasicGenerator(keras.callbacks.Callback):
         self.img_h          = img_h
         self.frames_n       = frames_n
         self.absolute_max_string_len = absolute_max_string_len
-        self.current_epoch  = multiprocessing.Value('i', start_epoch)
-        self.curriculum     = curriculum
+        self.current_epoch   = multiprocessing.Value('i', start_epoch)
+        self.cur_train_index = multiprocessing.Value('i', 0)
+        self.cur_val_index   = multiprocessing.Value('i', 0)
+        self.curriculum      = curriculum
+        self.random_seed     = random_seed
         if self.curriculum is not None:
             self.update_curriculum()
         self.vtype               = vtype
@@ -149,14 +152,21 @@ class BasicGenerator(keras.callbacks.Callback):
 
     @threadsafe_generator
     def next_train(self):
+        r = np.random.RandomState(self.random_seed)
         while 1:
+            shuffle = False
             if self.curriculum is not None and self.curriculum.epoch != self.current_epoch.value:
                 self.update_curriculum(train=True)
-            ret = self.get_batch(self.cur_train_index, self.minibatch_size, train=True)
-            self.cur_train_index += self.minibatch_size
-            if self.cur_train_index >= self.training_size:
-                self.cur_train_index = self.cur_train_index % self.minibatch_size
-                np.random.shuffle(self.train_list)
+            with self.cur_train_index.get_lock():
+                cur_train_index = self.cur_train_index.value
+                self.cur_train_index.value += self.minibatch_size
+                if self.cur_train_index.value >= self.training_size:
+                    self.cur_train_index.value = self.cur_train_index.value % self.minibatch_size
+                    shuffle = True
+            # print "{}:{}".format(cur_train_index,cur_train_index+self.minibatch_size)
+            ret = self.get_batch(cur_train_index, self.minibatch_size, train=True)
+            if shuffle:
+                r.shuffle(self.train_list)
             yield ret
 
     @threadsafe_generator
@@ -164,15 +174,20 @@ class BasicGenerator(keras.callbacks.Callback):
         while 1:
             if self.curriculum is not None and self.curriculum.epoch != self.current_epoch.value:
                 self.update_curriculum(train=False)
-            ret = self.get_batch(self.cur_val_index, self.minibatch_size, train=False)
-            self.cur_val_index += self.minibatch_size
-            if self.cur_val_index >= self.validation_size:
-                self.cur_val_index = self.cur_val_index % self.minibatch_size
+            with self.cur_val_index.get_lock():
+                cur_val_index = self.cur_val_index.value
+                self.cur_val_index.value += self.minibatch_size
+                if self.cur_val_index.value >= self.validation_size:
+                    self.cur_val_index.value = self.cur_val_index.value % self.minibatch_size
+            # print "{}:{}".format(cur_val_index,cur_val_index+self.minibatch_size)
+            ret = self.get_batch(cur_val_index, self.minibatch_size, train=True)
             yield ret
 
     def on_train_begin(self, logs={}):
-        self.cur_train_index = 0
-        self.cur_val_index = 0
+        with self.cur_train_index.get_lock():
+            self.cur_train_index.value = 0
+        with self.cur_val_index.get_lock():
+            self.cur_val_index.value = 0
 
     def on_epoch_begin(self, epoch, logs={}):
         with self.current_epoch.get_lock():
