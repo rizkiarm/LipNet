@@ -1,7 +1,7 @@
 from keras.layers.convolutional import Conv3D, ZeroPadding3D
 from keras.layers.pooling import MaxPooling3D
-from keras.layers.core import Dense, Activation, Dropout, Reshape
-from keras.layers.wrappers import Bidirectional
+from keras.layers.core import Dense, Activation, SpatialDropout3D, Flatten
+from keras.layers.wrappers import Bidirectional, TimeDistributed
 from keras.layers.recurrent import GRU
 from keras.layers import Input
 from keras.models import Model
@@ -29,24 +29,22 @@ class LipNet(object):
         self.zero1 = ZeroPadding3D(padding=(1,2,2), name='zero1')(self.input_data)
         self.conv1 = Conv3D(32, (3,5,5), strides=(1,2,2), activation='relu', kernel_initializer='he_normal', name='conv1')(self.zero1)
         self.maxp1 = MaxPooling3D(pool_size=(1,2,2), strides=(1,2,2), name='max1')(self.conv1)
-        self.drop1 = Dropout(0.5)(self.maxp1)
+        self.drop1 = SpatialDropout3D(0.5)(self.maxp1)
 
         self.zero2 = ZeroPadding3D(padding=(1,2,2), name='zero2')(self.drop1)
         self.conv2 = Conv3D(64, (3,5,5), strides=(1,1,1), activation='relu', kernel_initializer='he_normal', name='conv2')(self.zero2)
         self.maxp2 = MaxPooling3D(pool_size=(1,2,2), strides=(1,2,2), name='max2')(self.conv2)
-        self.drop2 = Dropout(0.5)(self.maxp2)
+        self.drop2 = SpatialDropout3D(0.5)(self.maxp2)
 
         self.zero3 = ZeroPadding3D(padding=(1,1,1), name='zero3')(self.drop2)
         self.conv3 = Conv3D(96, (3,3,3), strides=(1,1,1), activation='relu', kernel_initializer='he_normal', name='conv3')(self.zero3)
         self.maxp3 = MaxPooling3D(pool_size=(1,2,2), strides=(1,2,2), name='max3')(self.conv3)
-        self.drop3 = Dropout(0.5)(self.maxp3)
+        self.drop3 = SpatialDropout3D(0.5)(self.maxp3)
 
-        feature_dim = 96 * (self.img_w//(2*2*2*2)) * (self.img_h//(2*2*2*2))
+        self.resh1 = TimeDistributed(Flatten())(self.drop3)
 
-        self.resh1 = Reshape((self.frames_n, feature_dim))(self.drop3)
-
-        self.gru_1 = Bidirectional(GRU(256, return_sequences=True, kernel_initializer='he_normal', name='gru1'), merge_mode='sum')(self.resh1)
-        self.gru_2 = Bidirectional(GRU(256, return_sequences=True, kernel_initializer='he_normal', name='gru2'), merge_mode='concat')(self.gru_1)
+        self.gru_1 = Bidirectional(GRU(256, return_sequences=True, kernel_initializer='Orthogonal', name='gru1'), merge_mode='sum')(self.resh1)
+        self.gru_2 = Bidirectional(GRU(256, return_sequences=True, kernel_initializer='Orthogonal', name='gru2'), merge_mode='concat')(self.gru_1)
 
         # transforms RNN output to character activations:
         self.dense1 = Dense(self.output_size, kernel_initializer='he_normal', name='dense1')(self.gru_2)

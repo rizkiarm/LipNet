@@ -24,15 +24,9 @@ def curriculum_rules(epoch):
     if epoch < 1:
         return { 'sentence_length': 1 }
     elif 1 <= epoch < 2:
-        return { 'sentence_length': 2 }
-    elif 2 <= epoch < 3:
         return { 'sentence_length': 2, 'flip_probability': 0.5 }
-    elif 3 <= epoch < 4:
+    elif 2 <= epoch < 3:
         return { 'sentence_length': 3, 'flip_probability': 0.5, 'jitter_probability': 0.05 }
-    elif 4 <= epoch < 5:
-        return { 'sentence_length': -1 }
-    elif 5 <= epoch < 6:
-        return { 'sentence_length': -1, 'flip_probability': 0.5 }
     return { 'sentence_length': -1, 'flip_probability': 0.5, 'jitter_probability': 0.05 }
 
 
