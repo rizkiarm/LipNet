@@ -31,6 +31,7 @@ class BasicGenerator(keras.callbacks.Callback):
         self.cur_val_index   = multiprocessing.Value('i', 0)
         self.curriculum      = curriculum
         self.random_seed     = random_seed
+        self.process_epoch   = -1 # Will be updated on next_train()
         if self.curriculum is not None:
             self.update_curriculum()
         self.vtype               = vtype
@@ -154,25 +155,32 @@ class BasicGenerator(keras.callbacks.Callback):
     def next_train(self):
         r = np.random.RandomState(self.random_seed)
         while 1:
-            shuffle = False
-            if self.curriculum is not None and self.curriculum.epoch != self.current_epoch.value:
+            new_epoch = False
+            if self.process_epoch != self.current_epoch.value:
+                self.process_epoch = self.current_epoch.value
+                new_epoch = True
+            if new_epoch:
+                r.shuffle(self.train_list)
+                # print self.train_list[0]
+            if self.curriculum is not None and new_epoch:
                 self.update_curriculum(train=True)
             with self.cur_train_index.get_lock():
                 cur_train_index = self.cur_train_index.value
                 self.cur_train_index.value += self.minibatch_size
                 if self.cur_train_index.value >= self.training_size:
                     self.cur_train_index.value = self.cur_train_index.value % self.minibatch_size
-                    shuffle = True
             # print "{}:{}".format(cur_train_index,cur_train_index+self.minibatch_size)
             ret = self.get_batch(cur_train_index, self.minibatch_size, train=True)
-            if shuffle:
-                r.shuffle(self.train_list)
             yield ret
 
     @threadsafe_generator
     def next_val(self):
         while 1:
-            if self.curriculum is not None and self.curriculum.epoch != self.current_epoch.value:
+            new_epoch = False
+            if self.process_epoch != self.current_epoch.value:
+                self.process_epoch = self.current_epoch.value
+                new_epoch = True
+            if self.curriculum is not None and new_epoch:
                 self.update_curriculum(train=False)
             with self.cur_val_index.get_lock():
                 cur_val_index = self.cur_val_index.value
