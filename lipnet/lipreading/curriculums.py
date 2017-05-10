@@ -4,6 +4,7 @@ from lipnet.lipreading.videos import VideoAugmenter
 class Curriculum(object):
     def __init__(self, rules):
         self.rules = rules
+        self.epoch = -1
 
     def update(self, epoch, train=True):
         self.epoch = epoch
