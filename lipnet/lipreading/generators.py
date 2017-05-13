@@ -53,8 +53,8 @@ class BasicGenerator(keras.callbacks.Callback):
         self.align_path     = os.path.join(self.dataset_path, 'align')
         self.build_dataset()
         # Set steps to dataset size if not set
-        self.steps_per_epoch  = self.training_size if self.steps_per_epoch is None else self.steps_per_epoch
-        self.validation_steps = self.validation_size if self.validation_steps is None else self.validation_steps
+        self.steps_per_epoch  = self.default_training_steps if self.steps_per_epoch is None else self.steps_per_epoch
+        self.validation_steps = self.default_validation_steps if self.validation_steps is None else self.validation_steps
         return self
 
     @property
@@ -62,8 +62,16 @@ class BasicGenerator(keras.callbacks.Callback):
         return len(self.train_list)
 
     @property
+    def default_training_steps(self):
+        return self.training_size / self.minibatch_size
+
+    @property
     def validation_size(self):
         return len(self.val_list)
+
+    @property
+    def default_validation_steps(self):
+        return self.validation_size / self.minibatch_size
 
     def get_output_size(self):
         return 28
@@ -168,13 +176,17 @@ class BasicGenerator(keras.callbacks.Callback):
     def next_train(self):
         r = np.random.RandomState(self.random_seed)
         while 1:
+            # print "SI: {}, SE: {}".format(self.cur_train_index.value, self.shared_train_epoch.value)
             with self.cur_train_index.get_lock(), self.shared_train_epoch.get_lock():
                 cur_train_index = self.cur_train_index.value
                 self.cur_train_index.value += self.minibatch_size
-                # Shared epoch increment on start or index >= steps per epoch
-                if self.cur_train_index.value >= self.steps_per_epoch or self.shared_train_epoch.value < 0:
+                # Shared epoch increment on start or index >= training in epoch
+                if cur_train_index >= self.steps_per_epoch * self.minibatch_size:
+                    cur_train_index = 0
                     self.shared_train_epoch.value += 1
-                    self.cur_train_index.value = 0
+                    self.cur_train_index.value = self.minibatch_size
+                if self.shared_train_epoch.value < 0:
+                    self.shared_train_epoch.value += 1
                 # Shared index overflow
                 if self.cur_train_index.value >= self.training_size:
                     self.cur_train_index.value = self.cur_train_index.value % self.minibatch_size
@@ -184,12 +196,17 @@ class BasicGenerator(keras.callbacks.Callback):
                 self.process_train_epoch += epoch_differences
                 for i in range(epoch_differences):
                     r.shuffle(self.train_list) # Catch up
-                print "GENERATOR EPOCH {}".format(self.process_train_epoch)
-                print self.train_list[0]
+                # print "GENERATOR EPOCH {}".format(self.process_train_epoch)
+                # print self.train_list[0]
+            # print "PI: {}, SI: {}, SE: {}".format(cur_train_index, self.cur_train_index.value, self.shared_train_epoch.value)
             if self.curriculum is not None and self.curriculum.epoch != self.process_train_epoch:
                 self.update_curriculum(self.process_train_epoch, train=True)
             # print "Train [{},{}] {}:{}".format(self.process_train_epoch, epoch_differences, cur_train_index,cur_train_index+self.minibatch_size)
             ret = self.get_batch(cur_train_index, self.minibatch_size, train=True)
+            # if epoch_differences > 0:
+            #     print "GENERATOR EPOCH {} - {}:{}".format(self.process_train_epoch, cur_train_index, cur_train_index + self.minibatch_size)
+            #     print ret[0]['source_str']
+            #     print "-------------------"
             yield ret
 
     @threadsafe_generator

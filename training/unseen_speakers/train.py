@@ -27,12 +27,14 @@ def curriculum_rules(epoch):
 
 
 def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, absolute_max_string_len, minibatch_size):
+    steps_per_epoch = 28000
     curriculum = Curriculum(curriculum_rules)
     lip_gen = BasicGenerator(dataset_path=DATASET_DIR,
                                 minibatch_size=minibatch_size,
                                 img_c=img_c, img_w=img_w, img_h=img_h, frames_n=frames_n,
                                 absolute_max_string_len=absolute_max_string_len,
-                                curriculum=curriculum, start_epoch=start_epoch).build()
+                                curriculum=curriculum, start_epoch=start_epoch,
+                                steps_per_epoch=steps_per_epoch).build()
 
     lipnet = LipNet(img_c=img_c, img_w=img_w, img_h=img_h, frames_n=frames_n,
                             absolute_max_string_len=absolute_max_string_len, output_size=lip_gen.get_output_size())
@@ -60,15 +62,15 @@ def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, abso
     checkpoint  = ModelCheckpoint(os.path.join(OUTPUT_DIR, run_name, "weights{epoch:02d}.h5"), monitor='val_loss', save_weights_only=True, mode='auto', period=1)
 
     lipnet.model.fit_generator(generator=lip_gen.next_train(),
-                        steps_per_epoch=lip_gen.training_size, epochs=stop_epoch,
-                        validation_data=lip_gen.next_val(), validation_steps=lip_gen.validation_size,
+                        steps_per_epoch=steps_per_epoch, epochs=stop_epoch,
+                        validation_data=lip_gen.next_val(), validation_steps=lip_gen.default_validation_steps,
                         callbacks=[checkpoint, statistics, visualize, lip_gen, tensorboard, csv_logger], 
                         initial_epoch=start_epoch, 
                         verbose=1,
-                        max_q_size=10,
-                        workers=8,
+                        max_q_size=5,
+                        workers=2,
                         pickle_safe=True)
 
 if __name__ == '__main__':
     run_name = datetime.datetime.now().strftime('%Y:%m:%d:%H:%M:%S')
-    train(run_name, 0, 20, 3, 100, 50, 75, 32, 50)
+    train(run_name, 0, 5000, 3, 100, 50, 75, 32, 50)

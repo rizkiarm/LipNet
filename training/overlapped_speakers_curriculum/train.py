@@ -24,9 +24,15 @@ def curriculum_rules(epoch):
     if epoch < 1:
         return { 'sentence_length': 1 }
     elif 1 <= epoch < 2:
-        return { 'sentence_length': 2, 'flip_probability': 0.5 }
+        return { 'sentence_length': 2 }
     elif 2 <= epoch < 3:
+        return { 'sentence_length': 2, 'flip_probability': 0.5 }
+    elif 3 <= epoch < 4:
         return { 'sentence_length': 3, 'flip_probability': 0.5, 'jitter_probability': 0.05 }
+    elif 4 <= epoch < 5:
+        return { 'sentence_length': -1 }
+    elif 5 <= epoch < 6:
+        return { 'sentence_length': -1, 'flip_probability': 0.5 }
     return { 'sentence_length': -1, 'flip_probability': 0.5, 'jitter_probability': 0.05 }
 
 
@@ -68,16 +74,16 @@ def train(run_name, speaker, start_epoch, stop_epoch, img_c, img_w, img_h, frame
     checkpoint  = ModelCheckpoint(os.path.join(OUTPUT_DIR, run_name, "weights{epoch:02d}.h5"), monitor='val_loss', save_weights_only=True, mode='auto', period=1)
 
     lipnet.model.fit_generator(generator=lip_gen.next_train(),
-                        steps_per_epoch=lip_gen.training_size, epochs=stop_epoch,
-                        validation_data=lip_gen.next_val(), validation_steps=lip_gen.validation_size,
+                        steps_per_epoch=lip_gen.default_training_steps, epochs=stop_epoch,
+                        validation_data=lip_gen.next_val(), validation_steps=lip_gen.default_validation_steps,
                         callbacks=[checkpoint, statistics, visualize, lip_gen, tensorboard, csv_logger],
                         initial_epoch=start_epoch,
                         verbose=1,
-                        max_q_size=10,
-                        workers=8,
+                        max_q_size=5,
+                        workers=2,
                         pickle_safe=True)
 
 if __name__ == '__main__':
     run_name = datetime.datetime.now().strftime('%Y:%m:%d:%H:%M:%S')
     speaker = sys.argv[1]
-    train(run_name, speaker, 0, 20, 3, 100, 50, 75, 32, 50)
+    train(run_name, speaker, 0, 5000, 3, 100, 50, 75, 32, 50)
