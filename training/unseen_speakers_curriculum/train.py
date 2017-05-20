@@ -6,7 +6,7 @@ from lipnet.lipreading.curriculums import Curriculum
 from lipnet.core.decoders import Decoder
 from lipnet.lipreading.helpers import labels_to_text
 from lipnet.utils.spell import Spell
-from lipnet.model import LipNet
+from lipnet.model2 import LipNet
 import numpy as np
 import datetime
 import os

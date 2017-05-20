@@ -6,7 +6,7 @@ from lipnet.lipreading.curriculums import Curriculum
 from lipnet.core.decoders import Decoder
 from lipnet.lipreading.helpers import labels_to_text
 from lipnet.utils.spell import Spell
-from lipnet.model import LipNet
+from lipnet.model2 import LipNet
 import numpy as np
 import datetime
 import os
@@ -59,13 +59,13 @@ def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, abso
     checkpoint  = ModelCheckpoint(os.path.join(OUTPUT_DIR, run_name, "weights{epoch:02d}.h5"), monitor='val_loss', save_weights_only=True, mode='auto', period=1)
 
     lipnet.model.fit_generator(generator=lip_gen.next_train(), 
-                        steps_per_epoch=lip_gen.training_size, epochs=stop_epoch, 
-                        validation_data=lip_gen.next_val(), validation_steps=lip_gen.validation_size,
+                        steps_per_epoch=lip_gen.default_training_steps, epochs=stop_epoch,
+                        validation_data=lip_gen.next_val(), validation_steps=lip_gen.default_validation_steps,
                         callbacks=[checkpoint, statistics, visualize, lip_gen, tensorboard, csv_logger], 
                         initial_epoch=start_epoch, 
                         verbose=1,
-                        max_q_size=10,
-                        workers=8,
+                        max_q_size=5,
+                        workers=2,
                         pickle_safe=True)
 
 if __name__ == '__main__':

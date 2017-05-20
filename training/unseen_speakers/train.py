@@ -6,7 +6,7 @@ from lipnet.lipreading.curriculums import Curriculum
 from lipnet.core.decoders import Decoder
 from lipnet.lipreading.helpers import labels_to_text
 from lipnet.utils.spell import Spell
-from lipnet.model import LipNet
+from lipnet.model2 import LipNet
 import numpy as np
 import datetime
 import os
@@ -27,14 +27,12 @@ def curriculum_rules(epoch):
 
 
 def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, absolute_max_string_len, minibatch_size):
-    steps_per_epoch = 28000
     curriculum = Curriculum(curriculum_rules)
     lip_gen = BasicGenerator(dataset_path=DATASET_DIR,
                                 minibatch_size=minibatch_size,
                                 img_c=img_c, img_w=img_w, img_h=img_h, frames_n=frames_n,
                                 absolute_max_string_len=absolute_max_string_len,
-                                curriculum=curriculum, start_epoch=start_epoch,
-                                steps_per_epoch=steps_per_epoch).build()
+                                curriculum=curriculum, start_epoch=start_epoch).build()
 
     lipnet = LipNet(img_c=img_c, img_w=img_w, img_h=img_h, frames_n=frames_n,
                             absolute_max_string_len=absolute_max_string_len, output_size=lip_gen.get_output_size())
@@ -62,7 +60,7 @@ def train(run_name, start_epoch, stop_epoch, img_c, img_w, img_h, frames_n, abso
     checkpoint  = ModelCheckpoint(os.path.join(OUTPUT_DIR, run_name, "weights{epoch:02d}.h5"), monitor='val_loss', save_weights_only=True, mode='auto', period=1)
 
     lipnet.model.fit_generator(generator=lip_gen.next_train(),
-                        steps_per_epoch=steps_per_epoch, epochs=stop_epoch,
+                        steps_per_epoch=lip_gen.default_training_steps, epochs=stop_epoch,
                         validation_data=lip_gen.next_val(), validation_steps=lip_gen.default_validation_steps,
                         callbacks=[checkpoint, statistics, visualize, lip_gen, tensorboard, csv_logger], 
                         initial_epoch=start_epoch, 

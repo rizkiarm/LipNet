@@ -1,8 +1,9 @@
 from keras.layers.convolutional import Conv3D, ZeroPadding3D
 from keras.layers.pooling import MaxPooling3D
-from keras.layers.core import Dense, Activation, Dropout, Flatten
+from keras.layers.core import Dense, Activation, SpatialDropout3D, Flatten
 from keras.layers.wrappers import Bidirectional, TimeDistributed
 from keras.layers.recurrent import GRU
+from keras.layers.normalization import BatchNormalization
 from keras.layers import Input
 from keras.models import Model
 from lipnet.core.layers import CTC
@@ -28,21 +29,27 @@ class LipNet(object):
         self.input_data = Input(name='the_input', shape=input_shape, dtype='float32')
 
         self.zero1 = ZeroPadding3D(padding=(1, 2, 2), name='zero1')(self.input_data)
-        self.conv1 = Conv3D(32, (3, 5, 5), strides=(1, 2, 2), activation='relu', kernel_initializer='he_normal', name='conv1')(self.zero1)
-        self.maxp1 = MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2), name='max1')(self.conv1)
-        self.drop1 = Dropout(0.5)(self.maxp1)
+        self.conv1 = Conv3D(32, (3, 5, 5), strides=(1, 2, 2), kernel_initializer='he_normal', name='conv1')(self.zero1)
+        self.batc1 = BatchNormalization(name='batc1')(self.conv1)
+        self.actv1 = Activation('relu', name='actv1')(self.batc1)
+        self.drop1 = SpatialDropout3D(0.5)(self.actv1)
+        self.maxp1 = MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2), name='max1')(self.drop1)
 
-        self.zero2 = ZeroPadding3D(padding=(1, 2, 2), name='zero2')(self.drop1)
-        self.conv2 = Conv3D(64, (3, 5, 5), strides=(1, 1, 1), activation='relu', kernel_initializer='he_normal', name='conv2')(self.zero2)
-        self.maxp2 = MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2), name='max2')(self.conv2)
-        self.drop2 = Dropout(0.5)(self.maxp2)
+        self.zero2 = ZeroPadding3D(padding=(1, 2, 2), name='zero2')(self.maxp1)
+        self.conv2 = Conv3D(64, (3, 5, 5), strides=(1, 1, 1), kernel_initializer='he_normal', name='conv2')(self.zero2)
+        self.batc2 = BatchNormalization(name='batc2')(self.conv2)
+        self.actv2 = Activation('relu', name='actv2')(self.batc2)
+        self.drop2 = SpatialDropout3D(0.5)(self.actv2)
+        self.maxp2 = MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2), name='max2')(self.drop2)
 
-        self.zero3 = ZeroPadding3D(padding=(1, 1, 1), name='zero3')(self.drop2)
-        self.conv3 = Conv3D(96, (3, 3, 3), strides=(1, 1, 1), activation='relu', kernel_initializer='he_normal', name='conv3')(self.zero3)
-        self.maxp3 = MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2), name='max3')(self.conv3)
-        self.drop3 = Dropout(0.5)(self.maxp3)
+        self.zero3 = ZeroPadding3D(padding=(1, 1, 1), name='zero3')(self.maxp2)
+        self.conv3 = Conv3D(96, (3, 3, 3), strides=(1, 1, 1), kernel_initializer='he_normal', name='conv3')(self.zero3)
+        self.batc3 = BatchNormalization(name='batc3')(self.conv3)
+        self.actv3 = Activation('relu', name='actv3')(self.batc3)
+        self.drop3 = SpatialDropout3D(0.5)(self.actv3)
+        self.maxp3 = MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2), name='max3')(self.drop3)
 
-        self.resh1 = TimeDistributed(Flatten())(self.drop3)
+        self.resh1 = TimeDistributed(Flatten())(self.maxp3)
 
         self.gru_1 = Bidirectional(GRU(256, return_sequences=True, kernel_initializer='Orthogonal', name='gru1'), merge_mode='concat')(self.resh1)
         self.gru_2 = Bidirectional(GRU(256, return_sequences=True, kernel_initializer='Orthogonal', name='gru2'), merge_mode='concat')(self.gru_1)
