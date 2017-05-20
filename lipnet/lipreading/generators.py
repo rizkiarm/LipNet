@@ -220,7 +220,7 @@ class BasicGenerator(keras.callbacks.Callback):
             if self.curriculum is not None and self.curriculum.epoch != self.process_epoch:
                 self.update_curriculum(self.process_epoch, train=False)
             # print "Val [{}] {}:{}".format(self.process_epoch, cur_val_index,cur_val_index+self.minibatch_size)
-            ret = self.get_batch(cur_val_index, self.minibatch_size, train=True)
+            ret = self.get_batch(cur_val_index, self.minibatch_size, train=False)
             yield ret
 
     def on_train_begin(self, logs={}):
