@@ -4,12 +4,12 @@ Keras implementation of the method described in the paper 'LipNet: End-to-End Se
 ![LipNet performing prediction (subtitle alignment only for visualization)](assets/lipreading.gif)
 
 ## Results
-|       Scenario       | Epoch |  CER  |  WER  |  BLEU |
-|:--------------------:|:-----:|:-----:|:-----:|:-----:|
-|  Unseen speakers [C] |   15  | 0.102 | 0.150 | 0.844 |
-|    Unseen speakers   |  N/A  |  N/A  |  N/A  |  N/A  |
-| Unseen sentences [C] |  N/A  |  N/A  |  N/A  |  N/A  |
-|   Unseen sentences   |  N/A  |  N/A  |  N/A  |  N/A  |
+|       Scenario          | Epoch |  CER  |  WER  |  BLEU |
+|:-----------------------:|:-----:|:-----:|:-----:|:-----:|
+|  Unseen speakers [C]    |  N/A  |  N/A  |  N/A  |  N/A  |
+|    Unseen speakers      |  178  |  6.19%  |  14.19%  |  88.21%  |
+| Overlapped speakers [C] |  N/A  |  N/A  |  N/A  |  N/A  |
+|   Overlapped speakers   |  368  |  1.56%  |  3.38%  |  96.93%  |
 
 **Notes**:
 
@@ -62,7 +62,7 @@ You can change this by adding ``vtype = "face"`` and ``face_predictor_path`` (wh
 7. Create symlink from each ``training/*/datasets/align`` to your align folder.
 8. You can change the training parameters by modifying ``train.py`` inside its respective scenarios.
 
-### Random split
+### Random split (Unmaintained)
 Create symlink from ``training/random_split/datasets/video`` to your video dataset folder (which contains ``s*`` directory).
 
 Train the model using the following command:
@@ -125,7 +125,7 @@ To evaluate and visualize the trained model on a single video / image frames, yo
 ```
 **Example:**
 ```
-./predict evaluation/models/weights04.h5 evaluation/samples/id2_vcd_swwp2s.mpg
+./predict evaluation/models/weights368.h5 evaluation/samples/id2_vcd_swwp2s.mpg
 ```
 ## Work in Progress
 This is a work in progress. Errors are to be expected.

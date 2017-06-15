@@ -246,6 +246,9 @@ class RandomSplitGenerator(BasicGenerator):
         self.align_path = os.path.join(self.dataset_path, 'align')
         self.val_split = kwargs.get('val_split', 0.2)
         self.build_dataset()
+        # Set steps to dataset size if not set
+        self.steps_per_epoch  = self.default_training_steps if self.steps_per_epoch is None else self.steps_per_epoch
+        self.validation_steps = self.default_validation_steps if self.validation_steps is None else self.validation_steps
         return self
         
     def build_dataset(self):
