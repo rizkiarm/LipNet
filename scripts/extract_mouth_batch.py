@@ -44,9 +44,11 @@ for filepath in find_files(SOURCE_PATH, SOURCE_EXTS):
     print "Processing: {}".format(filepath)
     video = Video(vtype='face', face_predictor_path=FACE_PREDICTOR_PATH).from_video(filepath)
 
+    filepath_wo_ext = os.path.splitext(filepath)[0]
+    target_dir = os.path.join(TARGET_PATH, filepath_wo_ext)
+    mkdir_p(target_dir)
+
     i = 0
     for frame in video.mouth:
-    	target_dir = os.path.join(TARGET_PATH, filepath)
-    	mkdir_p(target_dir)
     	io.imsave(os.path.join(target_dir, "mouth_{0:03d}.png".format(i)), frame)
     	i += 1
