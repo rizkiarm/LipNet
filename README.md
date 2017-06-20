@@ -58,7 +58,7 @@ There are five different training scenarios that are (going to be) available:
 4. Create ``align`` folder inside the ``datasets`` folder.
 5. All current ``train.py`` expect the videos to be in the form of 100x50px mouthcrop image frames.
 You can change this by adding ``vtype = "face"`` and ``face_predictor_path`` (which can be found in ``evaluation/models``) in the instantiation of ``Generator`` inside the ``train.py``
-6. The other way would be to extract the mouthcrop image using (very crude) bash scripts inside ``scripts`` folder.
+6. The other way would be to extract the mouthcrop image using ``scripts/extract_mouth_batch.py`` (usage can be found inside the script).
 7. Create symlink from each ``training/*/datasets/align`` to your align folder.
 8. You can change the training parameters by modifying ``train.py`` inside its respective scenarios.
 
