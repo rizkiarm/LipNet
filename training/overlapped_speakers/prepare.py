@@ -23,7 +23,7 @@ CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 DATASET_VIDEO_PATH = sys.argv[1]
 DATASET_ALIGN_PATH = sys.argv[2]
 
-VAL_SAMPLES = sys.argv[3]
+VAL_SAMPLES = int(sys.argv[3])
 
 for speaker_path in glob.glob(os.path.join(DATASET_VIDEO_PATH, '*')):
     speaker_id = os.path.splitext(speaker_path)[0].split('/')[-1]
