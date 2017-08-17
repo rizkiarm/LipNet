@@ -125,7 +125,7 @@ To evaluate and visualize the trained model on a single video / image frames, yo
 ```
 **Example:**
 ```
-./predict evaluation/models/weights368.h5 evaluation/samples/id2_vcd_swwp2s.mpg
+./predict evaluation/models/overlapped-weights368.h5 evaluation/samples/id2_vcd_swwp2s.mpg
 ```
 ## Work in Progress
 This is a work in progress. Errors are to be expected.
