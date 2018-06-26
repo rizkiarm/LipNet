@@ -42,11 +42,16 @@ Here is some ideas on what you can do next:
 * Modify the package and make some improvements to it.
 * Train the model using predefined training scenarios.
 * Make your own training scenarios.
-* Use pre-trained weight to do lipreading.
+* Use [pre-trained weights](https://github.com/rizkiarm/LipNet/tree/master/evaluation/models) to do lipreading.
 * Go crazy and experiment on other dataset! by changing some hyperparameters or modify the model.
 
 ## Dataset
 This model uses GRID corpus (http://spandh.dcs.shef.ac.uk/gridcorpus/)
+
+## Pre-trained weights
+For those of you who are having difficulties in training the model (or just want to see the end results), you can download and use the weights provided here: https://github.com/rizkiarm/LipNet/tree/master/evaluation/models. 
+
+More detail on saving and loading weights can be found in [Keras FAQ](https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model).
 
 ## Training
 There are five different training scenarios that are (going to be) available:
