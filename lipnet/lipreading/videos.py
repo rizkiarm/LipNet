@@ -4,7 +4,6 @@ from keras import backend as K
 from scipy import ndimage
 from scipy.misc import imresize
 import skvideo.io
-import cv2
 import dlib
 from lipnet.lipreading.aligns import Align
 
@@ -117,8 +116,13 @@ class Video(object):
         self.handle_type(frames)
         return self
 
-    def from_video(self, path):
-        frames = self.get_video_frames(path)
+    def from_video(self, path, use_opencv=False):
+        if use_opencv:
+            import cv2
+            frames = self.get_video_frames_cv2(path)
+        else:
+            frames = self.get_video_frames(path)
+
         self.handle_type(frames)
         return self
 
@@ -192,14 +196,12 @@ class Video(object):
             mouth_frames.append(mouth_crop_image)
         return mouth_frames
 
-    def get_video_frames_skvideo(self, path):
+    def get_video_frames(self, path):
         videogen = skvideo.io.vreader(path)
-        #print("aaaa")
         frames = np.array([frame for frame in videogen])
         return frames
 
-
-    def get_video_frames(self, path):
+    def get_video_frames_cv2(self, path):
         reader = cv2.VideoCapture(path)
         
         frames = []
@@ -213,9 +215,6 @@ class Video(object):
         
         return np.array(frames)
     
-    
-
-
     def set_data(self, frames):
         data_frames = []
         for frame in frames:
