@@ -116,8 +116,13 @@ class Video(object):
         self.handle_type(frames)
         return self
 
-    def from_video(self, path):
-        frames = self.get_video_frames(path)
+    def from_video(self, path, use_opencv=False):
+        if use_opencv:
+            import cv2
+            frames = self.get_video_frames_cv2(path)
+        else:
+            frames = self.get_video_frames(path)
+
         self.handle_type(frames)
         return self
 
@@ -196,6 +201,20 @@ class Video(object):
         frames = np.array([frame for frame in videogen])
         return frames
 
+    def get_video_frames_cv2(self, path):
+        reader = cv2.VideoCapture(path)
+        
+        frames = []
+        while True:
+            ret, frame = reader.read()
+            
+            if not ret:
+                break
+            else:
+                frames.append(frame[...,::-1])
+        
+        return np.array(frames)
+    
     def set_data(self, frames):
         data_frames = []
         for frame in frames:
