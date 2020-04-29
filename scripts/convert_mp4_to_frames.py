@@ -1,7 +1,5 @@
 # create a folder to store extracted images
 import os
-folder = 'test'
-os.mkdir(folder)
 # use opencv to do the job
 import cv2
 import sys, fnmatch, errno
@@ -40,7 +38,7 @@ for filepath in find_files(SOURCE_PATH, SOURCE_EXTS):
     target_dir = os.path.join(TARGET_PATH, filepath_wo_ext)
     mkdir_p(target_dir)
     while True:
-        success,image = vidcap.read()
+        success, image = vidcap.read()
         if not success:
             break
         cv2.imwrite(os.path.join(target_dir,"frame{:d}.jpg".format(count)), image)     # save frame as JPEG file
