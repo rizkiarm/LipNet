@@ -5,7 +5,7 @@ from keras.layers.wrappers import Bidirectional, TimeDistributed
 from keras.layers.recurrent import LSTM
 from keras.layers import Input
 from keras.models import Model
-from LipNet.lipnet.core.layers import CTC
+from lipnet.core.layers import CTC
 from keras import backend as K
 
 

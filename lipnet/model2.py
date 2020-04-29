@@ -6,7 +6,7 @@ from keras.layers.recurrent import GRU
 from keras.layers.normalization import BatchNormalization
 from keras.layers import Input
 from keras.models import Model
-from LipNet.lipnet.core.layers import CTC
+from lipnet.core.layers import CTC
 from keras import backend as K
 
 

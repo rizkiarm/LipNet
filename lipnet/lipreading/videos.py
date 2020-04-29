@@ -5,7 +5,7 @@ from scipy import ndimage
 from scipy.misc import imresize
 import skvideo.io
 import dlib
-from LipNet.lipnet.lipreading.aligns import Align
+from lipnet.lipreading.aligns import Align
 
 class VideoAugmenter(object):
     @staticmethod

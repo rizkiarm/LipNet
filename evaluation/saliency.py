@@ -1,9 +1,9 @@
-from LipNet.lipnet.lipreading.videos import Video
-from LipNet.lipnet.lipreading.visualization import show_video_subtitle
-from LipNet.lipnet.core.decoders import Decoder
-from LipNet.lipnet.lipreading.helpers import labels_to_text
-from LipNet.lipnet.utils.spell import Spell
-from LipNet.lipnet.model2 import LipNet
+from lipnet.lipreading.videos import Video
+from lipnet.lipreading.visualization import show_video_subtitle
+from lipnet.core.decoders import Decoder
+from lipnet.lipreading.helpers import labels_to_text
+from lipnet.utils.spell import Spell
+from lipnet.model2 import LipNet
 from keras.optimizers import Adam
 from keras import backend as K
 from vis.visualization import visualize_saliency

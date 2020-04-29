@@ -1,4 +1,4 @@
-from LipNet.lipnet.utils.wer import wer_sentence
+from lipnet.utils.wer import wer_sentence
 from nltk.translate import bleu_score
 import numpy as np
 import editdistance
