@@ -21,13 +21,13 @@ PREDICT_BEAM_WIDTH  = 200
 PREDICT_DICTIONARY  = os.path.join(CURRENT_PATH,'..','common','dictionaries','grid.txt')
 
 def predict(weight_path, video_path, absolute_max_string_len=32, output_size=28):
-    print "\nLoading data from disk..."
+    print("\nLoading data from disk...")
     video = Video(vtype='face', face_predictor_path=FACE_PREDICTOR_PATH)
     if os.path.isfile(video_path):
         video.from_video(video_path)
     else:
         video.from_frames(video_path)
-    print "Data loaded.\n"
+    print("Data loaded.\n")
 
     if K.image_data_format() == 'channels_first':
         img_c, frames_n, img_w, img_h = video.data.shape
@@ -69,17 +69,17 @@ if __name__ == '__main__':
         show_video_subtitle(video.face, result)
 
     stripe = "-" * len(result)
-    print ""
-    print " __                   __  __          __      "
-    print "/\\ \\       __        /\\ \\/\\ \\        /\\ \\__   "
-    print "\\ \\ \\     /\\_\\  _____\\ \\ `\\\\ \\     __\\ \\ ,_\\  "
-    print " \\ \\ \\  __\\/\\ \\/\\ '__`\\ \\ , ` \\  /'__`\\ \\ \\/  "
-    print "  \\ \\ \\L\\ \\\\ \\ \\ \\ \\L\\ \\ \\ \\`\\ \\/\\  __/\\ \\ \\_ "
-    print "   \\ \\____/ \\ \\_\\ \\ ,__/\\ \\_\\ \\_\\ \\____\\\\ \\__\\"
-    print "    \\/___/   \\/_/\\ \\ \\/  \\/_/\\/_/\\/____/ \\/__/"
-    print "                  \\ \\_\\                       "
-    print "                   \\/_/                       "
-    print ""
-    print "             --{}- ".format(stripe)
-    print "[ DECODED ] |> {} |".format(result)
-    print "             --{}- ".format(stripe)
+    print( "")
+    print( " __                   __  __          __      ")
+    print( "/\\ \\       __        /\\ \\/\\ \\        /\\ \\__   ")
+    print( "\\ \\ \\     /\\_\\  _____\\ \\ `\\\\ \\     __\\ \\ ,_\\  ")
+    print( " \\ \\ \\  __\\/\\ \\/\\ '__`\\ \\ , ` \\  /'__`\\ \\ \\/  ")
+    print( "  \\ \\ \\L\\ \\\\ \\ \\ \\ \\L\\ \\ \\ \\`\\ \\/\\  __/\\ \\ \\_ ")
+    print( "   \\ \\____/ \\ \\_\\ \\ ,__/\\ \\_\\ \\_\\ \\____\\\\ \\__\\")
+    print( "    \\/___/   \\/_/\\ \\ \\/  \\/_/\\/_/\\/____/ \\/__/")
+    print( "                  \\ \\_\\                       ")
+    print( "                   \\/_/                       ")
+    print( "")
+    print( "             --{}- ".format(stripe))
+    print( "[ DECODED ] |> {} |".format(result))
+    print( "             --{}- ".format(stripe))

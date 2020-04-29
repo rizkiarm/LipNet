@@ -52,7 +52,7 @@ def predict(weight_path, video):
     result         = decoder.decode(y_pred, input_length)[0]
 
     show_video_subtitle(video.face, result)
-    print result
+    print(result)
 
 def predicts(weight_path, videos_path, absolute_max_string_len=32, output_size=28):
     videos = []
@@ -63,13 +63,13 @@ def predicts(weight_path, videos_path, absolute_max_string_len=32, output_size=2
         predict(weight_path, video)
 
 def load(video_path):
-    print "\n[{}]\nLoading data from disk...".format(video_path)
+    print( "\n[{}]\nLoading data from disk...".format(video_path))
     video = Video(vtype='face', face_predictor_path=FACE_PREDICTOR_PATH)
     if os.path.isfile(video_path):
         video.from_video(video_path)
     else:
         video.from_frames(video_path)
-    print "Data loaded.\n"
+    print( "Data loaded.\n")
     return video
 
 if __name__ == '__main__':

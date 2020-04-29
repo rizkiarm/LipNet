@@ -145,7 +145,7 @@ for k in range(0, len(SCENARIOS)):
 
     # plt.show()
     savepath = os.path.join('confusions', _name + '.png')
-    print savepath
+    print (savepath)
     plt.savefig(savepath, bbox_inches='tight')
 
 
@@ -160,5 +160,5 @@ plot_confusion_matrix(confusion_matrix, classes=viseme_labels, normalize=True,
 
 # plt.show()
 savepath = os.path.join('confusions', viseme_name + '.png')
-print savepath
+print (savepath)
 plt.savefig(savepath, bbox_inches='tight')
