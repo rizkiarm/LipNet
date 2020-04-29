@@ -14,8 +14,8 @@ Example:
     Will make directory TARGET and process everything inside evaluation/samples/GRID/ that match pattern *.mpg.
 '''
 
-from LipNet.lipnet.lipreading.videos import Video
-import os, fnmatch, sys, errno  
+from lipnet.lipreading.videos import Video
+import os, fnmatch, sys, errno
 from skimage import io
 
 SOURCE_PATH = sys.argv[1]
@@ -41,14 +41,21 @@ def find_files(directory, pattern):
                 yield filename
 
 for filepath in find_files(SOURCE_PATH, SOURCE_EXTS):
-    print ("Processing: {}".format(filepath))
-    video = Video(vtype='face', face_predictor_path=FACE_PREDICTOR_PATH).from_video(filepath)
-
     filepath_wo_ext = os.path.splitext(filepath)[0]
     target_dir = os.path.join(TARGET_PATH, filepath_wo_ext)
-    mkdir_p(target_dir)
+    if not os.path.isdir(target_dir):
+      print ("Processing: {}".format(filepath))
+      try:
+        video = Video(vtype='face', face_predictor_path=FACE_PREDICTOR_PATH).from_video(filepath)
+        filepath_wo_ext = os.path.splitext(filepath)[0]
+        target_dir = os.path.join(TARGET_PATH, filepath_wo_ext)
+        mkdir_p(target_dir)
 
-    i = 0
-    for frame in video.mouth:
-    	io.imsave(os.path.join(target_dir, "mouth_{0:03d}.png".format(i)), frame)
-    	i += 1
+        i = 0
+        for frame in video.mouth:
+          io.imsave(os.path.join(target_dir, "mouth_{0:03d}.png".format(i)), frame)
+          i += 1
+      except Exception as exp:
+        print(exp.args)
+    else:
+      print("Skipping: {}".format(filepath))

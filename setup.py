@@ -31,3 +31,4 @@ setup(name='lipnet',
 #pip install sklearn
 #pip install scikit-image
 #pip install keras-vis
+#pip install scipy==1.1.0
