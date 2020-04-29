@@ -41,6 +41,6 @@ for filepath in find_files(SOURCE_PATH, SOURCE_EXTS):
         success, image = vidcap.read()
         if not success:
             break
-        cv2.imwrite(os.path.join(target_dir,"frame{:d}.jpg".format(count)), image)     # save frame as JPEG file
+        cv2.imwrite(os.path.join(target_dir,"frame{:d}.png".format(count)), image)     # save frame as JPEG file
         count += 1
     print("{} images are extacted in {}.".format(count,target_dir))
