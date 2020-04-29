@@ -14,7 +14,7 @@ Example:
     Will make directory TARGET and process everything inside evaluation/samples/GRID/ that match pattern *.mpg.
 '''
 
-from lipnet.lipreading.videos import Video
+from LipNet.lipnet.lipreading.videos import Video
 import os, fnmatch, sys, errno  
 from skimage import io
 

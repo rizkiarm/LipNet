@@ -1,8 +1,8 @@
-from lipnet.lipreading.curriculums import Curriculum
-from lipnet.lipreading.videos import Video
-from lipnet.lipreading.aligns import Align
-from lipnet.lipreading.helpers import text_to_labels, labels_to_text
-from lipnet.lipreading.visualization import show_video_subtitle
+from LipNet.lipnet.lipreading.curriculums import Curriculum
+from LipNet.lipnet.lipreading.videos import Video
+from LipNet.lipnet.lipreading.aligns import Align
+from LipNet.lipnet.lipreading.helpers import text_to_labels, labels_to_text
+from LipNet.lipnet.lipreading.visualization import show_video_subtitle
 import numpy as np
 
 def rules(epoch):

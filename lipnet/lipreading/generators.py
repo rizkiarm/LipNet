@@ -1,8 +1,8 @@
-from lipnet.lipreading.helpers import text_to_labels
-from lipnet.lipreading.videos import Video
-from lipnet.lipreading.aligns import Align
-from lipnet.helpers.threadsafe import threadsafe_generator
-from lipnet.helpers.list import get_list_safe
+from LipNet.lipnet.lipreading.helpers import text_to_labels
+from LipNet.lipnet.lipreading.videos import Video
+from LipNet.lipnet.lipreading.aligns import Align
+from LipNet.lipnet.helpers.threadsafe import threadsafe_generator
+from LipNet.lipnet.helpers.list import get_list_safe
 from keras import backend as K
 import numpy as np
 import keras

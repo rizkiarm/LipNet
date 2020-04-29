@@ -1,5 +1,5 @@
 from keras.layers.core import Lambda
-from lipnet.core.loss import ctc_lambda_func
+from LipNet.lipnet.core.loss import ctc_lambda_func
 
 # CTC Layer implementation using Lambda layer
 # (because Keras doesn't support extra prams on loss function)

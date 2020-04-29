@@ -10,17 +10,24 @@ setup(name='lipnet',
     packages=['lipnet'],
     zip_safe=False,
 	install_requires=[
-        'Keras==2.0.2',
-        'editdistance==0.3.1',
-		'h5py==2.6.0',
-		'matplotlib==2.0.0',
-		'numpy==1.12.1',
-		'python-dateutil==2.6.0',
-		'scipy==0.19.0',
-		'Pillow==4.1.0',
-		'tensorflow==1.0.1',
-		'Theano==0.9.0',
-        'nltk==3.2.2',
-        'sk-video==1.1.7',
-        'dlib==19.4.0'
+        'Keras',
+        'editdistance',
+		'h5py',
+		'matplotlib',
+		'numpy',
+		'python-dateutil',
+		'scipy',
+		'Pillow',
+		'tensorflow',
+		'Theano',
+        'nltk',
+        'sk-video',
+        'cmake',
+        'dlib',
     ])
+
+# need to run this
+#pip install git+https://www.github.com/keras-team/keras-contrib.git
+#pip install sklearn
+#pip install scikit-image
+#pip install keras-vis

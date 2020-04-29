@@ -1,12 +1,12 @@
 from keras.optimizers import Adam
 from keras.callbacks import TensorBoard, CSVLogger, ModelCheckpoint
-from lipnet.lipreading.generators import RandomSplitGenerator
-from lipnet.lipreading.callbacks import Statistics, Visualize
-from lipnet.lipreading.curriculums import Curriculum
-from lipnet.core.decoders import Decoder
-from lipnet.lipreading.helpers import labels_to_text
-from lipnet.utils.spell import Spell
-from lipnet.model2 import LipNet
+from LipNet.lipnet.lipreading.generators import RandomSplitGenerator
+from LipNet.lipnet.lipreading.callbacks import Statistics, Visualize
+from LipNet.lipnet.lipreading.curriculums import Curriculum
+from LipNet.lipnet.core.decoders import Decoder
+from LipNet.lipnet.lipreading.helpers import labels_to_text
+from LipNet.lipnet.utils.spell import Spell
+from LipNet.lipnet.model2 import LipNet
 import numpy as np
 import datetime
 import os

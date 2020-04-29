@@ -1,10 +1,10 @@
 from keras.optimizers import Adam
-from lipnet.lipreading.generators import BasicGenerator
-from lipnet.lipreading.callbacks import Statistics
-from lipnet.model2 import LipNet
-from lipnet.core.decoders import Decoder
-from lipnet.lipreading.helpers import labels_to_text
-from lipnet.utils.spell import Spell
+from LipNet.lipnet.lipreading.generators import BasicGenerator
+from LipNet.lipnet.lipreading.callbacks import Statistics
+from LipNet.lipnet.model2 import LipNet
+from LipNet.lipnet.core.decoders import Decoder
+from LipNet.lipnet.lipreading.helpers import labels_to_text
+from LipNet.lipnet.utils.spell import Spell
 import numpy as np
 import sys
 import os
