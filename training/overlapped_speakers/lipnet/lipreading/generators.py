@@ -106,7 +106,10 @@ class BasicGenerator(keras.callbacks.Callback):
         for video_path in video_list:
             video_id = os.path.splitext(video_path)[0].split('/')[-1]
             align_path = os.path.join(self.align_path, video_id)+".align"
-            align_hash[video_id] = Align(self.absolute_max_string_len, text_to_labels).from_file(align_path)
+            try:
+                align_hash[video_id] = Align(self.absolute_max_string_len, text_to_labels).from_file(align_path)
+            except Exception as exp:
+                print("Error: %s for %s" % (str(exp.args), video_path))
         return align_hash
 
     def build_dataset(self):
