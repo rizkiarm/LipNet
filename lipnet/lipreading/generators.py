@@ -3,9 +3,9 @@ from lipnet.lipreading.videos import Video
 from lipnet.lipreading.aligns import Align
 from lipnet.helpers.threadsafe import threadsafe_generator
 from lipnet.helpers.list import get_list_safe
-from keras import backend as K
+from tensorflow.keras import backend as K
 import numpy as np
-import keras
+from tensorflow import keras
 import pickle
 import os
 import glob

@@ -2,7 +2,7 @@ from lipnet.utils.wer import wer_sentence
 from nltk.translate import bleu_score
 import numpy as np
 import editdistance
-import keras
+from tensorflow import keras
 import csv
 import os
 
@@ -86,7 +86,7 @@ class Statistics(keras.callbacks.Callback):
                                "{0:.5f}".format(stats['bleu'][0]), "{0:.5f}".format(stats['bleu'][1])])
 
 
-class Visualize(keras.callbacks.Callback):
+class Visualize(tensorflow.keras.callbacks.Callback):
 
     def __init__(self, output_dir, model_container, generator, decoder, num_display_sentences=10):
         self.model_container = model_container

@@ -3,7 +3,7 @@ from keras.layers.pooling import MaxPooling3D
 from keras.layers.core import Dense, Activation, Flatten
 from keras.layers.wrappers import Bidirectional, TimeDistributed
 from keras.layers.recurrent import LSTM
-from keras_contrib.layers import GroupNormalization
+import tensorflow_addons.layers import GroupNormalization
 from keras.layers import Input
 from keras.models import Model
 from lipnet.core.layers import CTC

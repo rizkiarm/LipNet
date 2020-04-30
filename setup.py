@@ -32,3 +32,4 @@ setup(name='lipnet',
 #pip install scikit-image
 #pip install keras-vis
 #pip install scipy==1.1.0
+#pip install git+https://github.com/tensorflow/addons.git@r0.9

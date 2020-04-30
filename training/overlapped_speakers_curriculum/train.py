@@ -1,5 +1,5 @@
-from keras.optimizers import Adam
-from keras.callbacks import TensorBoard, CSVLogger, ModelCheckpoint
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import TensorBoard, CSVLogger, ModelCheckpoint
 from lipnet.lipreading.generators import BasicGenerator
 from lipnet.lipreading.callbacks import Statistics, Visualize
 from lipnet.lipreading.curriculums import Curriculum

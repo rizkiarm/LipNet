@@ -4,8 +4,8 @@ from lipnet.core.decoders import Decoder
 from lipnet.lipreading.helpers import labels_to_text
 from lipnet.utils.spell import Spell
 from lipnet.model2 import LipNet
-from keras.optimizers import Adam
-from keras import backend as K
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras import backend as K
 import numpy as np
 import sys
 import os
