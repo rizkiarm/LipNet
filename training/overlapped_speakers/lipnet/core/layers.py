@@ -1,4 +1,4 @@
-from tensorflow.keras.layers.core import Lambda
+from tensorflow.keras.layers import Lambda
 from lipnet.core.loss import ctc_lambda_func
 
 # CTC Layer implementation using Lambda layer
