@@ -2,7 +2,7 @@ from lipnet.utils.wer import wer_sentence
 from nltk.translate import bleu_score
 import numpy as np
 import editdistance
-import keras
+from tensorflow import keras
 import csv
 import os
 
