@@ -1,7 +1,7 @@
 from tensorflow.keras.layers import Conv3D, ZeroPadding3D
 from tensorflow.keras.layers import MaxPooling3D
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten
-from tensorflow.keras.layers.wrappers import Bidirectional, TimeDistributed
+from tensorflow.keras.layers import Bidirectional, TimeDistributed
 from tensorflow.keras.layers import LSTM
 from tensorflow.keras.layers import Input
 from tensorflow.keras.models import Model

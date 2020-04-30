@@ -1,7 +1,7 @@
 from tensorflow.keras.layers import Conv3D, ZeroPadding3D
 from tensorflow.keras.layers import MaxPooling3D
 from tensorflow.keras.layers import Dense, Activation, SpatialDropout3D, Flatten
-from tensorflow.keras.layers.wrappers import Bidirectional, TimeDistributed
+from tensorflow.keras.layers import Bidirectional, TimeDistributed
 from tensorflow.keras.layers import GRU
 from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.layers import Input
