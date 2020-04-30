@@ -67,9 +67,8 @@ def train(run_name, speaker, start_epoch, stop_epoch, img_c, img_w, img_h, frame
                         callbacks=[checkpoint, statistics, visualize, lip_gen, tensorboard, csv_logger],
                         initial_epoch=start_epoch,
                         verbose=1,
-                        max_q_size=5,
-                        workers=2,
-                        pickle_safe=True)
+                        max_queue_size=5,
+                        workers=2,)
 
 if __name__ == '__main__':
     run_name = datetime.datetime.now().strftime('%Y:%m:%d:%H:%M:%S')
