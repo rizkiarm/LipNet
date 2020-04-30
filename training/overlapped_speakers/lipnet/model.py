@@ -1,8 +1,8 @@
-from tensorflow.keras.layers.convolutional import Conv3D, ZeroPadding3D
-from tensorflow.keras.layers.pooling import MaxPooling3D
-from tensorflow.keras.layers.core import Dense, Activation, Dropout, Flatten
+from tensorflow.keras.layers import Conv3D, ZeroPadding3D
+from tensorflow.keras.layers import MaxPooling3D
+from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten
 from tensorflow.keras.layers.wrappers import Bidirectional, TimeDistributed
-from tensorflow.keras.layers.recurrent import GRU
+from tensorflow.keras.layers import GRU
 from tensorflow.keras.layers import Input
 from tensorflow.keras.models import Model
 from lipnet.core.layers import CTC
