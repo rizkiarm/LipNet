@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from tensorflow.keras import backend as K
+from tensorflow.compat.v1.keras import backend as K
 from scipy import ndimage
 from scipy.misc import imresize
 import skvideo.io

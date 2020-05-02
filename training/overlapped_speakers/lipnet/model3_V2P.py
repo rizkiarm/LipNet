@@ -7,7 +7,7 @@ import keras_contrib.layers import GroupNormalization
 from tensorflow.keras.layers import Input
 from tensorflow.keras.models import Model
 from lipnet.core.layers import CTC
-from tensorflow.keras import backend as K
+from tensorflow.compat.v1.keras import backend as K
 
 
 class LipNet(object):

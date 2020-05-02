@@ -3,7 +3,7 @@ from lipnet.lipreading.videos import Video
 from lipnet.lipreading.aligns import Align
 from lipnet.helpers.threadsafe import threadsafe_generator
 from lipnet.helpers.list import get_list_safe
-from tensorflow.keras import backend as K
+from tensorflow.compat.v1.keras import backend as K
 import numpy as np
 from tensorflow import keras
 import pickle

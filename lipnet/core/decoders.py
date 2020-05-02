@@ -1,4 +1,4 @@
-from tensorflow.keras import backend as K
+from tensorflow.compat.v1.keras import backend as K
 import numpy as np
 
 def _decode(y_pred, input_length, greedy=True, beam_width=100, top_paths=1):

@@ -5,7 +5,7 @@ from lipnet.lipreading.helpers import labels_to_text
 from lipnet.utils.spell import Spell
 from lipnet.model2 import LipNet
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras import backend as K
+from tensorflow.compat.v1.keras import backend as K
 from vis.visualization import visualize_saliency
 import numpy as np
 import sys
