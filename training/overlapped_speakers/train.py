@@ -6,7 +6,7 @@ from lipnet.lipreading.curriculums import Curriculum
 from lipnet.core.decoders import Decoder
 from lipnet.lipreading.helpers import labels_to_text
 from lipnet.utils.spell import Spell
-from lipnet.model4 import LipNet
+from lipnet.model2 import LipNet
 import numpy as np
 import datetime
 import os
@@ -59,7 +59,7 @@ def train(run_name, speaker, start_epoch, stop_epoch, img_c, img_w, img_h, frame
     visualize   = Visualize(os.path.join(OUTPUT_DIR, run_name), lipnet, lip_gen.next_val(), decoder, num_display_sentences=minibatch_size)
     tensorboard = TensorBoard(log_dir=os.path.join(LOG_DIR, run_name))
     csv_logger  = CSVLogger(os.path.join(LOG_DIR, "{}-{}.csv".format('training',run_name)), separator=',', append=True)
-    checkpoint  = ModelCheckpoint(os.path.join(OUTPUT_DIR, run_name, "weights{epoch:02d}.h5"), monitor='val_loss', save_weights_only=True, mode='auto', period=1)
+    checkpoint  = ModelCheckpoint(os.path.join(OUTPUT_DIR, run_name, "weights{epoch:02d}.h5"), monitor='val_loss', save_weights_only=True, mode='auto', save_freq=1)
 
     lipnet.model.fit_generator(generator=lip_gen.next_train(),
                         steps_per_epoch=lip_gen.default_training_steps, epochs=stop_epoch,

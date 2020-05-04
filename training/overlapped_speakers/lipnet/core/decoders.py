@@ -49,6 +49,7 @@ def decode(y_pred, input_length, greedy=True, beam_width=100, top_paths=1, **kwa
 
 class Decoder(object):
     def __init__(self, greedy=True, beam_width=100, top_paths=1, **kwargs):
+        K.set_session
         self.greedy         = greedy
         self.beam_width     = beam_width
         self.top_paths      = top_paths
