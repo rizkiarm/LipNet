@@ -46,4 +46,4 @@ for speaker_path in glob.glob(os.path.join(DATASET_VIDEO_PATH, '*')):
                 n += 1
         else:
             subprocess.check_output("ln -s '{}' '{}'".format(s_path, os.path.join(CURRENT_PATH, speaker_id, 'datasets', 'train', s_id)), shell=True)
-    subprocess.check_output("ln -s '{}' '{}'".format(DATASET_ALIGN_PATH, os.path.join(CURRENT_PATH, speaker_id, 'datasets', 'align')), shell=True)
+    subprocess.check_output("ln -s '{}' '{}'".format(os.path.join(DATASET_ALIGN_PATH,speaker_id,'align'), os.path.join(CURRENT_PATH, speaker_id, 'datasets', 'align')), shell=True)
